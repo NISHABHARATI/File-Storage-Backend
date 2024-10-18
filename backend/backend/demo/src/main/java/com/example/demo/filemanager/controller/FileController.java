@@ -3,6 +3,7 @@ package com.example.demo.filemanager.controller;
 import com.example.demo.filemanager.dto.FileDataResponseDTO;
 import com.example.demo.filemanager.entity.FileData;
 import com.example.demo.filemanager.service.FileService;
+import com.example.demo.filemanager.service.FileSharingService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class FileController {
 
     @Autowired
     private FileService fileService;
+    @Autowired
+    private FileSharingService fileSharingService;
 
 
 @GetMapping("/list")
@@ -146,13 +149,27 @@ public List<FileDataResponseDTO> listFilesAndFolders(@RequestParam Long userId, 
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/parentRowData")
-    public List<FileData> getParentRowData(@RequestParam Long userId, @RequestParam String fileName) {
-        List<FileData> results = fileService.getFilesByParentId(userId, fileName);
+@GetMapping("/search")
+public ResponseEntity<List<FileData>> searchFiles(@RequestParam Long userId, @RequestParam String fileName) {
 
-        return results;
+    List<FileData> files = fileService.searchFilesByName(userId,fileName);
+    return ResponseEntity.ok(files);
+}
+    @PostMapping("/share")
+    public ResponseEntity<String> shareFile(
+            @RequestParam String fileName,
+            @RequestParam String recipientEmail,
+            @RequestHeader("userId") Long userId) {
+        try {
+            if (recipientEmail == null || recipientEmail.isEmpty()) {
+                return ResponseEntity.badRequest().body("Recipient email list cannot be empty.");
+            }
+            fileSharingService.shareFile(fileName, userId, recipientEmail);
+            return ResponseEntity.ok("File shared successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
-
 
 
 }

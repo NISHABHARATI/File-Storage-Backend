@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -20,11 +21,23 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody User user) {
+//    @PostMapping("/signup")
+//    public ResponseEntity<User> signup(@RequestBody User user) {
+//        User registeredUser = userService.registerUser(user);
+//        return new ResponseEntity<>(registeredUser, HttpStatus.OK);
+//    }
+@PostMapping("/signup")
+public ResponseEntity<?> signup(@RequestBody User user) {
+    try {
+        // Attempt to register the user
         User registeredUser = userService.registerUser(user);
-        return new ResponseEntity<>(registeredUser, HttpStatus.OK);
+        // If successful, return a 201 CREATED status
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+    } catch (RuntimeException e) {
+        // If user already exists, return 409 Conflict
+        return new ResponseEntity<>("Email already exists", HttpStatus.CONFLICT);
     }
+}
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, Object> user, HttpServletRequest request) {
@@ -55,7 +68,9 @@ public class AuthController {
         }
     }
 
+    }
 
-}
+
+
 
 

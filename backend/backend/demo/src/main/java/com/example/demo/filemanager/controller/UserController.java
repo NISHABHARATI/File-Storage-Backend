@@ -2,15 +2,14 @@ package com.example.demo.filemanager.controller;
 
 import com.example.demo.filemanager.entity.User;
 import com.example.demo.filemanager.service.UserService;
+import com.example.demo.filemanager.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -20,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+
 
     @GetMapping("/details")
     public ResponseEntity<User> getUserDetails(HttpServletRequest request) {
@@ -41,6 +43,15 @@ public class UserController {
         }
 
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @GetMapping("/emails/exclude-current")
+    public ResponseEntity<List<String>> getEmailsExcludingCurrentUser(@RequestHeader("userId") Long userId) {
+        try {
+            List<String> emails = userService.getEmailsExcludingCurrentUser(userId);
+            return ResponseEntity.ok(emails);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
