@@ -149,11 +149,16 @@ public List<FileDataResponseDTO> listFilesAndFolders(@RequestParam Long userId, 
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-@GetMapping("/search")
-public ResponseEntity<List<FileData>> searchFiles(@RequestParam Long userId, @RequestParam String fileName) {
 
-    List<FileData> files = fileService.searchFilesByName(userId,fileName);
-    return ResponseEntity.ok(files);
+@GetMapping("/search")
+public ResponseEntity<List<FileData>> searchFiles(
+        @RequestHeader("userId") Long userId,
+        @RequestParam("parentFolderId") Long parentFolderId,
+        @RequestParam("searchTerm") String searchTerm)
+   {
+
+    List<FileData> matchingFiles = fileService.searchFiles(userId, parentFolderId, searchTerm);
+    return new ResponseEntity<>(matchingFiles, HttpStatus.OK);
 }
     @PostMapping("/share")
     public ResponseEntity<String> shareFile(
@@ -170,6 +175,7 @@ public ResponseEntity<List<FileData>> searchFiles(@RequestParam Long userId, @Re
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
 
 
 }

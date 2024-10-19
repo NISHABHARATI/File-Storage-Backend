@@ -10,13 +10,14 @@ import java.util.List;
 
     @Repository
     public interface FileRepository extends JpaRepository<FileData, Long> {
+
     List<FileData> findByUserIdAndParentFolderId(Long userId, Long parentFolderId);
     FileData findByUserIdAndFileName(Long userId, String fileName);
     List<FileData> findByUserId(Long userId);
     FileData findByUserIdAndParentFolderIdAndFileName(Long userId, Long parentFolderId, String fileName);
-    @Query("SELECT f FROM FileData f WHERE f.userId = :userId AND f.fileName LIKE %:searchTerm%")
-    List<FileData> findByFileNameContaining(@Param("userId") Long userId, @Param("searchTerm") String searchTerm);
+
     Optional<FileData> findByFileNameAndUserId(String fileName, Long userId);
+
     }
 
 

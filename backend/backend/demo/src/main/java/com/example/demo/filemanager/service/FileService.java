@@ -7,21 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class FileService {
 
     @Autowired
-     FileRepository fileRepository;
+    FileRepository fileRepository;
 
 
     public List<FileDataResponseDTO> getFilesAndFolders(Long userId, Long parentFolderId) {
@@ -107,8 +107,27 @@ public class FileService {
         fileRepository.save(fileData);
         return newFileName;
     }
-    public List<FileData> searchFilesByName(Long userId, String fileName) {
-        return fileRepository.findByFileNameContaining(userId, fileName);
+
+
+    public List<FileData> searchFiles(Long userId, Long parentFolderId, String searchTerm) {
+        List<FileData> results = new ArrayList<>(); // Correctly initialized as List<FileData>
+        searchInFolder(userId, parentFolderId, searchTerm, results); // Start recursive search
+        return results; // Return found results
     }
 
+
+    private void searchInFolder(Long userId, Long parentFolderId, String searchTerm, List<FileData> results) {
+        // Fetch files in the current folder
+        List<FileData> files = fileRepository.findByUserIdAndParentFolderId(userId, parentFolderId);
+        for (FileData file : files) {
+            if (file.getFileName().toLowerCase().startsWith(searchTerm.toLowerCase())) {
+                results.add(file);
+            }
+        }
+
+        List<FileData> folders = files.stream().filter(FileData::getIsFolder).collect(Collectors.toList());
+        for (FileData folder : folders) {
+            searchInFolder(userId, folder.getTableId(), searchTerm, results);
+        }
+    }
 }
