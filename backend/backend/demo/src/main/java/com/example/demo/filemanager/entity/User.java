@@ -1,43 +1,3 @@
-//package com.example.demo.filemanager.entity;
-//
-//import jakarta.persistence.*;
-//import lombok.*;
-//
-//import java.util.Objects;
-//
-//@Data
-//@Builder  //instance
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Entity
-//@Table(name = "users",schema="TRAINING_NISHA")
-//
-//public class User{
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long UserId;
-//    private String firstName;
-//    private String lastName;
-//    private String contact;
-//    private String email;
-//    private String password;
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof User user)) return false;
-//        return Objects.equals(UserId, user.UserId);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(UserId);
-//    }
-//
-//
-//}
-
 package com.example.demo.filemanager.entity;
 
 import jakarta.persistence.*;
@@ -46,7 +6,7 @@ import lombok.*;
 import java.util.Objects;
 
 @Data
-@Builder  // instance builder pattern
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

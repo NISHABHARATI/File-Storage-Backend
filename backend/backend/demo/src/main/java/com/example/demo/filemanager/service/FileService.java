@@ -130,4 +130,34 @@ public class FileService {
             searchInFolder(userId, folder.getTableId(), searchTerm, results);
         }
     }
+    public void uploadFolder(String folderName, List<MultipartFile> files, Long parentFolderId, Long userId) throws IOException {
+
+        FileData folder = new FileData();
+        folder.setFileName(folderName);
+        folder.setIsFolder(true);
+        folder.setIsFile(false);
+        folder.setBlobData(null);
+        folder.setParentFolderId(parentFolderId);
+        folder.setUserId(userId);
+        folder.setCreatedAt(LocalDateTime.now());
+
+        fileRepository.save(folder);
+
+        for (MultipartFile file : files) {
+            String originalFileName = file.getOriginalFilename();
+
+            if (!file.isEmpty()) {
+                FileData fileData = new FileData();
+                fileData.setFileName(originalFileName);
+                fileData.setIsFolder(false);
+                fileData.setIsFile(true);
+                fileData.setBlobData(file.getBytes());
+                fileData.setParentFolderId(folder.getTableId());
+                fileData.setUserId(userId);
+                fileData.setCreatedAt(LocalDateTime.now());
+
+                fileRepository.save(fileData);
+            }
+        }
+    }
 }

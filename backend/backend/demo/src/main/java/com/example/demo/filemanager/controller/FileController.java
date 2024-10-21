@@ -95,8 +95,6 @@ public List<FileDataResponseDTO> listFilesAndFolders(@RequestParam Long userId, 
 
         HttpSession session = request.getSession();
         Long sessionUserId = (Long) session.getAttribute("userId");
-        System.out.println("User ID from Session: " + sessionUserId);
-
         return sessionUserId;
     }
 
@@ -106,14 +104,14 @@ public List<FileDataResponseDTO> listFilesAndFolders(@RequestParam Long userId, 
                                                  @RequestParam Long parentId,
                                                  @RequestParam String folderName) {
         try {
-            // Create a new FileData instance for the folder
+
             FileData folder = FileData.builder()
                     .userId(userId)
                     .parentFolderId(parentId)
                     .fileName(folderName)
-                    .isFolder(true)  // Set folder flag
-                    .isFile(false)   // Set file flag to false
-                    .createdAt(LocalDateTime.now()) // Set creation time
+                    .isFolder(true)
+                    .isFile(false)
+                    .createdAt(LocalDateTime.now())
                     .build();
                     FileData savedFolder = fileService.save(folder);
 
@@ -176,8 +174,30 @@ public ResponseEntity<List<FileData>> searchFiles(
         }
     }
 
+    @PostMapping("/upload-folder")
+    public ResponseEntity<Map<String, Object>> uploadFolder(
+            @RequestParam("folderName") String folderName,
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam(value = "parentFolderId", required = false) Long parentFolderId,
+            @RequestHeader("userId") Long userId) {
 
+        try {
 
+            fileService.uploadFolder(folderName, files, parentFolderId, userId);
+
+            // Prepare response data
+            Map<String, Object> response = new HashMap<>();
+            response.put("folderName", folderName);
+            response.put("parentFolderId", parentFolderId != null ? parentFolderId : "Root");
+            response.put("userId", userId);
+            response.put("totalFiles", files.size());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error uploading folder."));
+        }
+    }
 }
 
 

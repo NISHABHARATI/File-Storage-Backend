@@ -15,7 +15,6 @@ import java.util.List;
     FileData findByUserIdAndFileName(Long userId, String fileName);
     List<FileData> findByUserId(Long userId);
     FileData findByUserIdAndParentFolderIdAndFileName(Long userId, Long parentFolderId, String fileName);
-
     Optional<FileData> findByFileNameAndUserId(String fileName, Long userId);
 
     }

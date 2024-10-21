@@ -44,6 +44,7 @@ public class UserController {
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @GetMapping("/emails/exclude-current")
     public ResponseEntity<List<String>> getEmailsExcludingCurrentUser(@RequestHeader("userId") Long userId) {
         try {

@@ -24,14 +24,6 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-//    public User registerUser(User user) {
-//        if (userRepository.findByEmail(user.getEmail()).isPresent() ||
-//                userRepository.findByEmail(user.getEmail()).isPresent()) {
-//            throw new RuntimeException("User already exists with this username or email");
-//        }
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        return userRepository.save(user);
-//    }
 public User registerUser(User user) {
     if (userRepository.findByEmail(user.getEmail()).isPresent()) {
         throw new RuntimeException("Email already exists");

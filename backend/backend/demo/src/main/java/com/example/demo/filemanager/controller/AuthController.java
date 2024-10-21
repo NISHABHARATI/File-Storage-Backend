@@ -21,20 +21,14 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<User> signup(@RequestBody User user) {
-//        User registeredUser = userService.registerUser(user);
-//        return new ResponseEntity<>(registeredUser, HttpStatus.OK);
-//    }
 @PostMapping("/signup")
 public ResponseEntity<?> signup(@RequestBody User user) {
     try {
-        // Attempt to register the user
+
         User registeredUser = userService.registerUser(user);
-        // If successful, return a 201 CREATED status
+
         return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     } catch (RuntimeException e) {
-        // If user already exists, return 409 Conflict
         return new ResponseEntity<>("Email already exists", HttpStatus.CONFLICT);
     }
 }

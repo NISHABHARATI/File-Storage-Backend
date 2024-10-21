@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FileManager {
 
     public static void main(String[] args) {
-        System.out.println("Entering Main");
+
         SpringApplication.run(FileManager.class, args);
     }
 
